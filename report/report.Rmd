@@ -1,0 +1,43 @@
+---
+title: "MSDS 6372. Bank Data (Should be changed before submission!!!)"
+output: 
+  pdf_document
+author: Swee Chew, Rene Pineda Alvarenga, Volodymyr Orlov
+header-includes:
+   - \usepackage{amsmath}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggpubr)
+library(car)
+```
+
+## Introduction
+
+TBD
+
+## Data Description
+
+TBD
+
+## Exploratory Analysis
+
+TBD
+
+## Objective 1 (Should be changed before submission!!!)
+ TBD
+
+## Objective 2 (Should be changed before submission!!!)
+
+## Code
+
+All code used to generate models, plots and report related to this work can be found in [https://github.com/VolodymyrOrlov/MSDS6372_Project2](https://github.com/VolodymyrOrlov/MSDS6372_Project2)
+
+## Figures and Tables
+
+TBD
+
+
+
