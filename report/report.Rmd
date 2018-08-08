@@ -16,11 +16,15 @@ library(car)
 
 ## Introduction
 
-TBD
+While telemarketing might be considered as a cornerstone of modern advertising strategies by some companies, its role is highly questionable and sometimes it is viewed as a total waste of resources by others^[https://www.prospectresearch.co.uk/blog/telemarketing-still-effective/]. Here we attempt to analize affect of telemarketing on attracting new clients in a finance industry by looking at the success of telemarketing calls for selling bank long-term
+deposits recorded by a Portuguese retail bank. We apply multiple statistical methods and analyze outcomes of two separate models:
+
+1. (objective 1 model title!!!). We found that ...
+1. (objective 2 model title!!!). We found that ...
 
 ## Data Description
 
-TBD
+The data is related with direct marketing campaigns of a Portuguese banking institution. The marketing campaigns were based on phone calls. Often, more than one contact to the same client was required, in order to access if the product (bank term deposit) would be ('yes') or not ('no') subscribed. 
 
 ## Exploratory Analysis
 
@@ -30,6 +34,8 @@ TBD
  TBD
 
 ## Objective 2 (Should be changed before submission!!!)
+
+ 
 
 ## Code
 
