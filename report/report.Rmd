@@ -24,11 +24,24 @@ deposits recorded by a Portuguese retail bank. We apply multiple statistical met
 
 ## Data Description
 
-The data is related with direct marketing campaigns of a Portuguese banking institution. The marketing campaigns were based on phone calls. Often, more than one contact to the same client was required, in order to access if the product (bank term deposit) would be ('yes') or not ('no') subscribed. 
+Our group focused on the Portuguese Bank Marketing data set^[https://archive.ics.uci.edu/ml/datasets/Bank+Marketing]. The data is a result
+of a direct marketing campaign performed by a Portuguese bank. The bank collected data from May 2008 to November 2010 and the data consist of 45,211 observations and 17 variables. The target response is a binary, categorical variable indicating whether a client subscribed to a
+deposit or not. For a complete list of variables please refer to \autoref{table1}.
 
 ## Exploratory Analysis
 
-TBD
+For our analysis we've used all variables. We separated variables into categorical and numerical and examined each group separately. 
+
+By looking at the histograms and boxplots of numeric variables in \autoref{fig2} and \autoref{fig1} we found that _duration_, _balance_, _campaign_ and _previous_ variables might have an impact on our binary respone, while _age_ has no apparant effect on it. 
+
+Count plots in \autoref{fig3} highlighted that data is unbalanced. Also, we found that _day_ doesn not seem to have an impact on our dependent variable. 
+
+We decided to train all our models on balanced and unbalanced samples taken from the original data.  
+For balanced sample we took 2500 'yes' data points and a random sample of 2500 'no' responses. For unbalanced sample we simply randomly chosen 5000 data points from our original dataset. 
+
+For our test sample we selected 1000 data points which do not overlap with neither balanced, nor unbalanced samples
+
+All dataset turned out to be clean and no imputation was nesessary. 
 
 ## Objective 1 (Should be changed before submission!!!)
  TBD
@@ -43,7 +56,55 @@ All code used to generate models, plots and report related to this work can be f
 
 ## Figures and Tables
 
-TBD
+\begin{table}
+\centering
+ \begin{tabular}{|p{0.2\linewidth}|p{0.2\linewidth}|p{0.4\linewidth}|}
+ \hline
+ Variable Name & Variable Type & Description  \\ \hline
+ job  &  categorical  & type of job ('admin.', 'blue-collar', 'entrepreneur', 'housemaid', 'management', 'retired', 'self-employed', 'services', 'student', 'technician', 'unemployed', 'unknown') \\ 
+ marital  & categorical  & marital status ('divorced', 'married', 'single', 'unknown')  \\ 
+ education  & categorical  & 'basic.4y', 'basic.6y', 'basic.9y', 'high.school', 'illiterate', 'professional.course', 'university.degree', 'unknown'  \\ 
+ default  & categorical  & has credit in default? ('no', 'yes', 'unknown')  \\ 
+ housing  & categorical  & has housing loan? ('no', 'yes', 'unknown')  \\ 
+ loan  & categorical  & has personal loan? ('no', 'yes', 'unknown')  \\ 
+ contact  & categorical  & contact communication type ('cellular', 'telephone')  \\ 
+ month  & categorical  & last contact month of year ('jan', 'feb', 'mar', ..., 'nov', 'dec')  \\ 
+ day\_of\_week  & categorical  & last contact day of the week ('mon', 'tue', 'wed', 'thu', 'fri')  \\ 
+ poutcome  & categorical  & outcome of the previous marketing campaign ('failure', 'nonexistent', 'success')  \\ 
+ age  & numeric  & age of the contact   \\ 
+ balance  & numeric  & average yearly balance, in euros  \\ 
+ day  & numeric  & last contact day  \\ 
+ duration  & numeric  & last contact duration, in seconds  \\ 
+ campaign  & numeric  & number of contacts performed during this campaign and for this client  \\ 
+ pdays  & numeric  & number of days that passed by after the client was last contacted from a previous campaign  \\ 
+ previous  & numeric  & number of contacts performed before this campaign and for this client  \\
+ \hline
+ \end{tabular}
+ \caption{List of variables.}
+ \label{table1}
+\end{table}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=1.0\textwidth]{images/fig1.png}
+  \caption{Histograms of numeric variables.}
+  \label{fig1}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=1.0\textwidth]{images/fig2.png}
+  \caption{Boxplots of numeric variables.}
+  \label{fig2}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=1.0\textwidth]{images/fig3.png}
+  \caption{Count plots of categorical variables.}
+  \label{fig3}
+\end{figure}
+
 
 
 
