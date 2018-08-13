@@ -1,10 +1,11 @@
 ---
 title: "MSDS 6372. Bank Data (Should be changed before submission!!!)"
-output: 
-  pdf_document
-author: Swee Chew, Rene Pineda Alvarenga, Volodymyr Orlov
-header-includes:
-   - \usepackage{amsmath}
+author: "Swee K Chew, Rene Pineda Alvarenga, Volodymyr Orlov"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+header-includes: \usepackage{amsmath}
 ---
 
 ```{r setup, include=FALSE}
@@ -16,35 +17,130 @@ library(car)
 
 ## Introduction
 
-While telemarketing might be considered as a cornerstone of modern advertising strategies by some companies, its role is highly questionable and sometimes it is viewed as a total waste of resources by others^[https://www.prospectresearch.co.uk/blog/telemarketing-still-effective/]. Here we attempt to analize affect of telemarketing on attracting new clients in a finance industry by looking at the success of telemarketing calls for selling bank long-term
-deposits recorded by a Portuguese retail bank. We apply multiple statistical methods and analyze outcomes of two separate models:
+While telemarketing might be considered as a cornerstone of modern advertising strategies by some companies, its role is highly questionable and sometimes it is viewed as a total waste of resources by others^[https://www.prospectresearch.co.uk/blog/telemarketing-still-effective/]. Here we attempt to analyze the effect of telemarketing on attracting new clients in a finance industry by looking at the success of telemarketing calls for selling bank long-term deposits recorded by a Portuguese retail bank. We apply multiple statistical methods and analyze outcomes of two separate models:
 
 1. (objective 1 model title!!!). We found that ...
 1. (objective 2 model title!!!). We found that ...
 
 ## Data Description
 
-Our group focused on the Portuguese Bank Marketing data set^[https://archive.ics.uci.edu/ml/datasets/Bank+Marketing]. The data is a result
-of a direct marketing campaign performed by a Portuguese bank. The bank collected data from May 2008 to November 2010 and the data consist of 45,211 observations and 17 variables. The target response is a binary, categorical variable indicating whether a client subscribed to a
-deposit or not. For a complete list of variables please refer to \autoref{table1}.
+Our group focused on the Portuguese Bank Marketing data set^[https://archive.ics.uci.edu/ml/datasets/Bank+Marketing]. The data is a result of a direct marketing campaign performed by a Portuguese bank. The bank collected data from May 2008 to November 2010 and the data consist of 45,211 observations and 17 variables. The target response is a binary, categorical variable indicating whether a client subscribed to a term deposit or not. For a complete list of variables please refer to \autoref{table1}.
 
 ## Exploratory Analysis
 
-For our analysis we've used all variables. We separated variables into categorical and numerical and examined each group separately. 
+For our analysis, we've used all variables. We separated variables into categorical and numerical and examined each group separately. 
 
-By looking at the histograms and boxplots of numeric variables in \autoref{fig2} and \autoref{fig1} we found that _duration_, _balance_, _campaign_ and _previous_ variables might have an impact on our binary respone, while _age_ has no apparant effect on it. 
+By looking at the histograms and boxplots of numeric variables in \autoref{fig2} and \autoref{fig3}, we found that _duration_, _balance_, _campaign_ and _previous_ variables might have an impact on our binary respone, while _age_ has no apparant effect on it. 
 
-Count plots in \autoref{fig3} highlighted that data is unbalanced. Also, we found that _day_ doesn not seem to have an impact on our dependent variable. 
+The count plot of the binary response variable in \autoref{fig4} highlighted that the data is unbalanced. Also, we found that _day_ does not seem to have an impact on our dependent variable. 
 
 We decided to train all our models on balanced and unbalanced samples taken from the original data.  
-For balanced sample we took 2500 'yes' data points and a random sample of 2500 'no' responses. For unbalanced sample we simply randomly chosen 5000 data points from our original dataset. 
+For balanced sample, we took 2500 'yes' data points and a random sample of 2500 'no' responses. For unbalanced sample, we simply randomly chose 5000 data points from our original dataset. 
 
-For our test sample we selected 1000 data points which do not overlap with neither balanced, nor unbalanced samples
+For our test sample, we selected 1000 data points which do not overlap with either balanced, or unbalanced samples.
 
 All dataset turned out to be clean and no imputation was nesessary. 
 
-## Objective 1 (Should be changed before submission!!!)
- TBD
+## Objective 1 - Logistic Regression Model
+
+The objective is to build a logistic regression model on the bank dataset in order to understand which explanatory variables influence the likelihood of a client subscribing a term deposit.
+
+The original dataset is unbalanced as we previously described, having ~40,000 records of 'no' responses and ~5,200 records of 'yes' responses. We are not certain if having an unblanced dataset would affect the predictibility of the model. Thus, we have decided to build two models using a radom sample of 5,000 each for balanced and an unbalanced dataset and observe if there are any differences. We will then use the test dataset to see if one model performs better than the other in term of predictibility. 
+
+### Summary tables of the response variable _y_ versus the categorical variables 
+
+\autoref{fig5} - 13 show the counts and percentage frequencies of the categorical variables for each factor level by the response variable. This allows us to see if a specific level/group of a factor has a higher or lower counts than its counterparts that might contribute to the likelihood of subscribing a term deposit. 
+
+In \autoref{fig5}, the proportions of subscribing a term deposit seems to be varied by job categories even for those with rougly the same sample size. For example, the proportion of subscribing a term deposit is higher for clients who hold an administrative position and the proportion is lower for individuals who are self-employed. Thus, _job_ seems to influence the likelihood of a client subscribing a term deposit. 
+
+Reviewing the frequency tables for the remaining categorical variables, it appears that all the variables could contribute, the proportions vary across the factor levels within each variable.
+
+### Summary statistics of the response variable _y_ versus the continous variables
+
+\autoref{fig14} displays the summary statistics for each continous variables by the response variable _y_, which allows us to see if there are any differences in characteristics between clients who subscribe a term deposit and who do not.
+
+Except the _age_ variable, the mean of the remaining continuous variables varies between two response groups. The standard deviations for some of the variables are high, which suggests that the data points are widely spread out. However, in this section, we will not apply any type of transformations to any of these variables in order to build a simplier model that is easy to interpret. 
+
+### Model Assumptions
+
+In this section, we will assess whether the model’s assumptions required for logistic regression analysis are met. 
+
+We use the Hosmer and Lemeshow Goodness-of-Fit test with the null hypothesis that the fitted model is correct. The output p-value is a number between 0 and 1 with higher values indicating a better fit. The p-value we obtain from the test is <0.0001 (\autoref{fig15}), which is statistically significant and implies that the null hypothesis needs to be rejected. However, this article critiques on the Hosmer and Lemeshow test and states that it's not an accurate approach to evaluate model fit^[https://support.sas.com/resources/papers/proceedings14/1485-2014.pdf]. Moreover, since our goal is to measure the predcitve power of the model and not the goodness of fit, we will proceed despite not meeting the assumption. 
+
+We also look at the residual diagnostics for any potential leverage points. \autoref{fig16} displays some of the residual and influential plots from the SAS output.When we review all the influential plots, there seems to be no leverage points. 
+
+Logistic regression also requires that there is little or no multicollinearity among the explanatory variables. The matrix scatter plot in \autoref{fig17} and the correlation matrix in \autoref{fig18} indicate that the continous variables are not highly correlated with each other.
+
+Since there is one record per client, the observations are independent of one another. We will now move on to building a model using the logistic regression method.  
+
+### Model Building
+
+First, the overall test was performed to test the null hypothesis that at least one coefficient is different from 0.Using the Likeliness Ratio test (\autoref{fig19}), we reject the null hypothesis at the significant level of 0.05 and conclude that the overall model is significant (p-value <0.0001). 
+
+We then include all the main effects, both categorical and continuous variables, to see which predictors are significant. In \autoref{fig20} (left) shows the output with all the main effects and their respective p-values. Based on the results, _education_, _default_, _age_, _balance_, _pdays_, and _previous_ are non-significant at the alpha level of 0.05. Thus, we remove them and refit the model, the output is shown in \autoref{fig20} (right).
+
+
+### Parameter Interpretation
+
+Due to the large number of odds ratio estimates for the categorical variables, we will only discuss a sample for each variable. 
+
+\autoref{fig21a} displays the coefficient estimates for each factor level and \autoref{fig21b} displays the odd ratio estimates and the confident intervals for each level. 
+
+##### Job [categorical]
+The odds ratio of subscribing a term-deposit for clients with unknown job title relative to clients who are entrepreneurs is 0.684 after accounting for other variables. The 95% confidence interval is [0.203,2.302]. In other words, the odds for someone with unknown job title to subscribe a term-deposit is 31.6% less than the odds for an entrepreneur. 
+
+##### Marital [categorical]
+The odds ratio for a single client subscribing a term-deposit relative to a married client is 0.727 after accounting for other variables. The 95% confidence interval is [0.607,0.870]. In other words, the odds for a single client to subscribe a term-deposit is 27.3% less than the odds for a married client. 
+
+##### Housing [categorical]
+The odds ratio of subscribing a term-deposit for clients with a housing loan relative to clients without a housing loan is 2.047 after accounting for other variables. The 95% confidence interval is [1.710,2.451]. In other words, the odds for someone with a housing loan to subscribe a term-deposit is 104.7% higher than the odds for someone without a housing loan. 
+
+##### Loan [categorical]
+The odds ratio of subscribing a term-deposit for clients with a personal loan relative to clients without a housing loan is 1.581 after accounting for other variables. The 95% confidence interval is [1.239,2.019]. In other words, the odds for someone with a personal loan to subscribe a term-deposit is 58.1% higher than the odds for someone without a personal loan. 
+
+##### Contact [categorical]
+The odds ratio of subscribing a term-deposit for clients whose contact communication type are unknown relative to clients who are communicated via cellular phone is 4.478 after accounting for other variables. The 95% confidence interval is [3.358,5.971]. In other words, the odds for someone who is contacted via an unknown method to subscribe a term-deposit is 347.8% higher than the odds for someone who is contacted via cellular. 
+
+##### Month [categorical]
+The odds ratio of subscribing a term-deposit for clients who are last contacted in September relative to those who are last contacted in November is 0.080 after accounting for other variables. The 95% confidence interval is [0.042,0.156]. In other words, the odds for a client who is last contacted in September to subscribe a term-deposit is 92% less than the odds for a client who is last contacted in November.
+
+##### Poutcome [categorical]
+The odds ratio of subscribing a term-deposit for clients with the unknown previous marketing campaign outcome relative to clients with the failure previous marketing campaign outcome is 1.566 after accounting for other variables. The 95% confidence interval is [1.233,1.989]. In other words, the odds for a client with the unknown previous marketing campaign outcome to subscribe a term-deposit is 56.6% higher than the odds for a client with the failure previous marketing campaign outcome. 
+
+##### Day [Continuous]
+For every 1 unit increases in last contact day of the month, the odds of a client subscribing a term-deposit will increase by a multiplicative factor of 1.013 holding all other variables constant. The odds ratio (for a clients with the last contact day on the 15th compared to the 14th) is 1.013. The 95% confidence interval is [1.002,1.023].
+
+##### Duration [Continuous]
+The odds of a client subscribing a term-deposit for a client is 1.006 times higher than a client 
+whose last contact duration is 1 second less after accounting for other variables. The 95% confidence interval is [1.005,1.006]. In other words, for every minute increase in the duration of last contact, the odds of a client subscribing a term-deposit will increase by a multiplicative factor of 1.409 (exp[60*0.00572]) holding all other variables constant.
+
+##### Campaign [Continuous]
+For every 1 unit increases in number of contacts performed during the campaign, the odds of a client subscribing a term-deposit will decrease by a multiplicative factor of 0.0894 holding all other variables constant. The odds ratio (10 contacts made compared to 11 contacts) is 0.0894. The 95% confidence interval is [0.859,0.929].
+
+### Prediction Performance
+
+Using the resulting model from the logistic regression, we examine the ROC curve on the balanced training dataset and also on the test dataset for the predictibility power of the model. 
+
+\autoref{fig22} (top) shows the ROC curve of the traning dataset and \autoref{fig22b_ROC} (bottom) represents the ROC curve on the test dataset. The area under the curve (AUC) is commonly used to assess the prediction performance of the logistics model, the closer it's to 1, the better the prediction is. The AUC based on the training data is 0.9096 and 0.9124 for the test data, which indicates that we did not overfit the model and the predicitibility power of the model is quite high. 
+
+The classification table in \autoref{fig23} can also be used to assess how well the model perform in classifying the dichotomous response variable. The accuracy is measured by its sensitivity (the ability to predict an event correctly) and specificity (the ability to predict a nonevent correctly). At the probability level of 0.5, the model can correctly classify 81.1% of the event and 84.2% of the non-event, with an overall rate of 82.7%. 
+
+
+### Using Unblanced Training Dataset
+
+The analyses we have done so far are based on the balanced training dataset. We would like to find out if we will get a different logistic regression model if the training dataset is unbalanced, thus we repeat the analyses using the unbalanced training dataset. 
+
+Due to the disproportionate sample size ratio of approximately 1:7 (yes:no), it's difficult to determine whether any of the variables have a influence of the likelihood of a client subscribing a term deposit just by looking at the frequency tables and the summary statistics table. Thus, we will simply include all the variables in the model and let it decide which predictors are significant.
+
+At the significant level of 0.05, _default_, _age_, _balance_, _pdays_, and _previous_ are non-significant (\autoref{fig24} (left)). The _education_ variable is statistically significant here, whereas it was shown non-significant in the prior model under the balanced dataset. We then remove the non-significant predictors and refit the model, the output is shown in \autoref{fig24} (right).
+
+Using the resulting model that is built with the unbalanced dataset, we examine the ROC curve of the training dataset and also on the same test dataset to determine the predictibility power of the model. 
+
+\autoref{fig25} (top) illustrates the ROC curve on the traning dataset and \autoref{fig25} (bottom) displays the ROC curve on the test dataset. The AUC is 0.9012 for the model based on the training data and 0.9054 for the test data. The values are slighly lower than those that are obtained from the balanced model respectively. 
+
+The classification table in \autoref{fig26} displays the sensitivity and the specificity of the model. At the probability level of 0.5, the model can correctly classify 31.9% of the event and 97.2% of the non-event, with an overall rate of 89.2%. 
+
+Compared to the prior model with the balanced training data, the sensitivity is much lower and the specificity is higher, which makes sense since the latter model is built based on the disproportionate ratio of 'no' and 'yes' responses, having a much higher observations of 'no' than 'yes'. Thus, the model can more accurately classify the nonevents resulting in higher specificity. On the other hand, the sensitivity is low due to the small number of 'yes' records in the training dataset. There is not enough information for the model to correctly classify the event. 
 
 ## Objective 2 (Should be changed before submission!!!)
 
@@ -69,7 +165,6 @@ All code used to generate models, plots and report related to this work can be f
  loan  & categorical  & has personal loan? ('no', 'yes', 'unknown')  \\ 
  contact  & categorical  & contact communication type ('cellular', 'telephone')  \\ 
  month  & categorical  & last contact month of year ('jan', 'feb', 'mar', ..., 'nov', 'dec')  \\ 
- day\_of\_week  & categorical  & last contact day of the week ('mon', 'tue', 'wed', 'thu', 'fri')  \\ 
  poutcome  & categorical  & outcome of the previous marketing campaign ('failure', 'nonexistent', 'success')  \\ 
  age  & numeric  & age of the contact   \\ 
  balance  & numeric  & average yearly balance, in euros  \\ 
@@ -100,11 +195,183 @@ All code used to generate models, plots and report related to this work can be f
 
 \begin{figure}
   \centering
-    \includegraphics[width=1.0\textwidth]{images/fig3.png}
+    \includegraphics[width=0.7\textwidth]{images/fig3.png}
   \caption{Count plots of categorical variables.}
   \label{fig3}
 \end{figure}
 
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig4.png}
+  \caption{Count plot of the response variable.}
+  \label{fig4}
+\end{figure}
 
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig5_job.png}
+  \caption{Frequency table of job type by the response variable.}
+  \label{fig5}
+\end{figure}
 
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig6_marital.png}
+  \caption{Frequency table of marital status by the response variable.}
+  \label{fig6}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig7_educ.png}
+  \caption{Frequency table of education level by the response variable.}
+  \label{fig7}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig8_default.png}
+  \caption{Frequency table of default (has credit or not) by the response variable.}
+  \label{fig8}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig9_housing.png}
+  \caption{Frequency table of housing loan by the response variable.}
+  \label{fig9}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig10_loan.png}
+  \caption{Frequency table of personal loan by the response variable.}
+  \label{fig10}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig11_contact.png}
+  \caption{Frequency table of contact type by the response variable.}
+  \label{fig11}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig12_month.png}
+  \caption{Frequency table of last contact month by the response variable.}
+  \label{fig12}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig13_poutcome.png}
+  \caption{Frequency table of the outcome of the previous marketing campaign by the response variable.}
+  \label{fig13}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.8\textwidth]{images/fig14_summary.png}
+  \caption{Summary statistics of the continuous variables by the response variable.}
+  \label{fig14}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig15_GOF.png}
+  \caption{Hosmer and Lemeshow Goodness-of-Fit Test Result.}
+  \label{fig15}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.4\textwidth]{images/fig16_residual_1.png}
+    \includegraphics[width=0.4\textwidth]{images/fig16_residual_2.png}
+    \includegraphics[width=0.4\textwidth]{images/fig16_residual_3.png}
+    \includegraphics[width=0.4\textwidth]{images/fig16_residual_4.png}
+  \caption{Residual and influential diagnostics plots.}
+  \label{fig16}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.6\textwidth]{images/fig17_scatter.png}
+  \caption{Matrix scatterplot of the continuous explanatory variables.}
+  \label{fig17}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.8\textwidth]{images/fig18_corr.png}
+  \caption{Correlation matrix of the continuous explanatory variables.}
+  \label{fig18}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig19_overall_test.png}
+  \caption{Overall test of Logistic Regression.}
+  \label{fig19}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig20a_typeIII.png} 
+    \includegraphics[width=0.5\textwidth]{images/fig20b_typeIII.png}
+  \caption{Type 3 analysis of effects with all the predictors (left) and with only the predictors that are significant (right) using the balanced dataset.}
+  \label{fig20}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.8\textwidth]{images/fig21a_coefficients.png} 
+  \caption{Tables of Coefficient estimates and Odds Ratio Estimates.}
+  \label{fig21a}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.8\textwidth]{images/fig21b_odds.png}
+  \caption{Tables of Coefficient estimates and Odds Ratio Estimates.}
+  \label{fig21b}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig22a_ROC.png} 
+    \includegraphics[width=0.5\textwidth]{images/fig22b_ROC.png}
+  \caption{ROC curves for the balanced training dataset and the test dataset.}
+  \label{fig22}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig23_ctable.png} 
+  \caption{The classification table based on the balanced training dataset.}
+  \label{fig23}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig24a_typeIII.png} 
+    \includegraphics[width=0.5\textwidth]{images/fig24b_typeIII.png}
+  \caption{Type 3 analysis of effects with all the predictors (left) and with only the predictors that are significant (right) using the unbalanced training dataset.}
+  \label{fig24}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig25a_ROC.png} 
+    \includegraphics[width=0.5\textwidth]{images/fig25b_ROC.png}
+  \caption{ROC curves for the unbalanced training dataset and the test dataset.}
+  \label{fig25}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/fig26_ctable.png} 
+  \caption{The classification table based on the unbalanced training dataset.}
+  \label{fig26}
+\end{figure}
 
