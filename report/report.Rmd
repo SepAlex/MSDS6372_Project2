@@ -1,9 +1,9 @@
 ---
-title: "MSDS 6372. Bank Data (Should be changed before submission!!!)"
-author: "Swee K Chew, Rene Pineda Alvarenga, Volodymyr Orlov"
+title: "MSDS 6372 Project 2 - Using classification methods to determine who will suscribe a bank's Term Deposit"
+author: "Swee K Chew, Rene Pineda, Volodymyr Orlov"
 output:
-  pdf_document: default
-  html_document:
+    pdf_document: default
+    html_document:
     df_print: paged
 header-includes: \usepackage{amsmath}
 ---
@@ -20,7 +20,7 @@ library(car)
 While telemarketing might be considered as a cornerstone of modern advertising strategies by some companies, its role is highly questionable and sometimes it is viewed as a total waste of resources by others^[https://www.prospectresearch.co.uk/blog/telemarketing-still-effective/]. Here we attempt to analyze the effect of telemarketing on attracting new clients in a finance industry by looking at the success of telemarketing calls for selling bank long-term deposits recorded by a Portuguese retail bank. We apply multiple statistical methods and analyze outcomes of two separate models:
 
 1. (objective 1 model title!!!). We found that ...
-1. (objective 2 model title!!!). We found that ...
+2. Objective 2: additional models.We created many new features, transforming continous variables to categories. We found that a Logistic Regression model based on these new features had the same performance that the model in Objective 1. We used a Linear Discriminant Analysis model which performed very poorly, in part due to the fact that only a handful of variables in the dataset are continuous. Finally, we developed a Random Forest model, which had a better performance than the Linear Regession model.
 
 ## Data Description
 
@@ -144,7 +144,80 @@ Compared to the prior model with the balanced training data, the sensitivity is 
 
 ## Objective 2 (Should be changed before submission!!!)
 
- 
+### a. Additional Logistic Regression model (LRM) with transformed variables
+
+##### Motivation: 
+The transformation of varaibles for this objective is focused in creating categories for continuous variables.This responds to two reasons:
+
+- A logistic regression model will typically assign a weight to continuous a feature, and always think that every feature is either positively or negatively related to the outcome variable. However, for some variables (for example _balance_) the feature might be positively related with the outcome while in other ranges, they are negatively
+related. Discretization of continuous features is a simple but useful way to include additional information that might solve this problem, and we'll pay special attention to those variables that were deemed as non-significant by the model in Objective 1. 
+
+- In other instances, the creation of categorical variables responds to the need of highlighting information that is hidden in the continuous variable (e.g. whether a client was previously contacted or not)
+
+The upper and lower limits for the categories are based on our analysis of the distribution of the features.
+
+##### Age:
+Created three categories: Adult (up to 35 yo), Middle aged (36 to 60 yo), and Elderly (65 yo and more)
+
+##### Balance:
+Created Categories for Negative balance, zero balance, and 5 levels for positive balance: $0 to $100, $101 to $500, $501 to $2,000, $2,0001 to $10,000, and more than $10,000. 
+
+##### Campaign:
+Created categories for clients that were contacted only once or twice and for those who were contacted more times during the campaign.
+
+##### pdays:
+Added variable to indicate whether a client was previously contacted or not. Additionally, converted days to months and created three categories depending on how much time had passed since the client was contacted.
+
+##### previous:
+Created categories for clients that were previously contacted only once or twice and those who were contacted more times.
+
+##### Model Building
+
+To create the logistic regression model, we used the Glmnet package in R, which fits a generalized linear model via penalized maximum likelihood. We performed a cross-validation fit, which is shown below. The potential model that minimizes the misclassification error include between 22 and 30 features. 
+
+We can generate a list of the coefficients for the value of lambda that gives minimum mean cross-validated error. By examining these coefficients, we can tell that the new categories we created for the _balance_, _campaign_, and _pdays_ variables were not selected by the model, similar to what happened for the first model we produced. However, it is interesting to notice that the selection process picks up the negative balance, zero balance, balance between $2,000 and $10,000 and balance greater than $10,000 as important, indicating that splitting _balance_ into categorical variables was useful.
+
+##### Prediction Performance
+
+Regarding predictive accuracy, the model with the new categorical variables shows a similiar performance than the model developed for objective 1. The model achieved an accuracy of 82.58% for the training set and 85.9% for the test set. However, this new model didn't perform as well when we measure the AUC indicator, which was lower than the other logistic regression model. The ROC curve is shown below. (Insert image here!!!)
+
+### b. Linear Discriminant Analysis model (LDA)
+
+The next requirement is to develop a LDA model using only the continuous predictors. This posed a serious challenge, because only 6 variables in the dataset are continous. Additionally, the logistic regression models we developed found that out of these 6 variables, four were non-significant (age, balance, pdays and previous), although one of the variables (duration) is perhaps the strongest predictor of all.
+
+Likely due to these limitations, the LDA model performed poorly. Examining the confusion matrix, we conclude that the model had an accuracy of only 74.1%, much lower than the logistic regression. The AUC score was also much lower (include chart of the AUC below!!!).
+
+The conclusion from the LDA model is that the categories in the outcome binomial variable are not clearly separable on the continuous features. The small number of continuous features and the knowledge we had about the low predicting power of these features would make us reject these types of models for this problem. 
+
+### c. Non-parametric approach: Random Forests (RF)
+
+The third additional model we developed is based on the Random Forest package in R. To make this model work smoothly, we decided to modify the original dataset as follows: i) Create dummies for all categorical variables, ii) Create an additional dummy variable that indicates whether the client was previously contacted or not. 
+
+Reviewing the accuracy and AUC of the random forest model, it performed significantly better than LDA model, and marginally better than the LRM model. This model is especially good at predicting the "Yes" cases: those people who will actually open the deposit, with a sensitivity of 88%. However, this model performed relatively poorly on the overall accuracy on the test set, which was brought down by a poor specificity rate. This might be due to the fact that the proportion of "Yes" in the test set was very low. (include chart of the AUC below!!)
+
+Other disadvantages of this model are:
+
+- The model is not easily interpretable: we can have an idea about which factors impact the outcome by using the "importance" function, which displays the mean Gini gain produced by the X's over all trees, an the mean decrease in classification accuracy after permuting X's over all trees. Based on this, we can assess which variables are more important on a relative scale, but there is no absolute measure of this and the model is not interpretable.
+
+- May require some work to tune the model to the data: the Random Forest has two main tuning parameters: the number of trees created (ntrees, default 500), and the number of features that are randomly selected at each split (mtry, default = the sq root of the number of features). The model we ran had the default parameters. We tried tuning the model increasing and decreasing the parameters, but we did not obtain a better overall performance. 
+
+## Comparison of all models and Conclusion
+
+The following table shows a comparison of the performance of the models, along 4 metrics:
+
+
+Summary      |Training Set Statistics          	    | Test Set Statistics                |	
+-------------|--------------------------------------|------------------------------------|------
+
+Model        |Accuracy |	Sensitivity	| Specificity	| Accuracy |Sensitivity	|Specificity |	AUC
+-------------|---------|--------------|-------------|----------|------------|------------|------
+LR model 1	 |	0.827	 |	  0.811     |   0.842     |          |            |            | 0.912
+LR model 2	 |  0.824	 |    0.796	    |   0.852     | 0.859	   |  0.8631	  |   0.793	   | 0.912
+LDA	         |  0.741	 |    0.658    	|   0.824	    | 0.647	   |  0.827	    |   0.636	   | 0.805
+Random Forest|	0.854	 |    0.884	    |   0.825	    | 0.828	   |  0.879	    |   0.825	   | 0.923
+
+Based on this information, we will choose the predictions from the random forest model. The limitation of low interpretability of the results can be overcome by understanding how different factors affect the outcome, as explained in the Exploratory Data Analysis section. 
+
 
 ## Code
 
