@@ -1,5 +1,5 @@
 ---
-title: "MSDS 6372 Project 2 - Using classification methods to determine who will suscribe a bank's Term Deposit"
+title: "MSDS 6372 Project 2 - Using classification methods to determine an outcome of a telemarketing campaign."
 author: "Swee K Chew, Rene Pineda, Volodymyr Orlov"
 output:
     pdf_document: default
@@ -17,22 +17,15 @@ library(car)
 
 ## Introduction
 
-While telemarketing might be considered as a cornerstone of modern advertising strategies by some companies, its role is highly questionable and sometimes it is viewed as a total waste of resources by others^[https://www.prospectresearch.co.uk/blog/telemarketing-still-effective/]. Here we attempt to analyze the effect of telemarketing on attracting new clients in a finance industry by looking at the success of telemarketing calls for selling bank long-term deposits recorded by a Portuguese retail bank. We apply multiple statistical methods and analyze outcomes of two separate models:
+While telemarketing might be considered as a cornerstone of modern advertising strategies by some companies, its role is highly questionable and sometimes it is viewed as a total waste of resources by others^[https://www.prospectresearch.co.uk/blog/telemarketing-still-effective/]. Here we attempt to analyze the effect of telemarketing on attracting new clients in a finance industry by looking at the success of telemarketing calls for selling bank long-term deposits recorded by a Portuguese retail bank. We apply multiple statistical methods and analyze outcomes of several separate models:
 
-1. (objective 1 model title!!!). We found that ...
-2. Objective 2: additional models.We created many new features, transforming continous variables to categories. We found that a Logistic Regression model based on these new features had the same performance that the model in Objective 1. We used a Linear Discriminant Analysis model which performed very poorly, in part due to the fact that only a handful of variables in the dataset are continuous. Finally, we developed a Random Forest model, which had a better performance than the Linear Regession model.
+1. Logistic Regression Models. We've built two models which can be used to predict our binary outcome and to interpret effects of predictors.
+1. We found that linear Discriminant Analysis model performed very poorly, in part due to the fact that only a handful of variables in the dataset are continuous.
+1. Non-parametric model. This model has a slightly better performance than Linear Regession models but is not easily interpretable. 
 
 ## Data Description
 
 Our group focused on the Portuguese Bank Marketing data set^[https://archive.ics.uci.edu/ml/datasets/Bank+Marketing]. The data is a result of a direct marketing campaign performed by a Portuguese bank. The bank collected data from May 2008 to November 2010 and the data consist of 45,211 observations and 17 variables. The target response is a binary, categorical variable indicating whether a client subscribed to a term deposit or not. For a complete list of variables please refer to \autoref{table1}.
-
-## Exploratory Analysis
-
-For our analysis, we've used all variables. We separated variables into categorical and numerical and examined each group separately. 
-
-By looking at the histograms and boxplots of numeric variables in \autoref{fig2} and \autoref{fig3}, we found that _duration_, _balance_, _campaign_ and _previous_ variables might have an impact on our binary respone, while _age_ has no apparant effect on it. 
-
-The count plot of the binary response variable in \autoref{fig4} highlighted that the data is unbalanced. Also, we found that _day_ does not seem to have an impact on our dependent variable. 
 
 We decided to train all our models on balanced and unbalanced samples taken from the original data.  
 For balanced sample, we took 2500 'yes' data points and a random sample of 2500 'no' responses. For unbalanced sample, we simply randomly chose 5000 data points from our original dataset. 
@@ -41,87 +34,86 @@ For our test sample, we selected 1000 data points which do not overlap with eith
 
 All dataset turned out to be clean and no imputation was nesessary. 
 
-## Objective 1 - Logistic Regression Model
+## Exploratory Analysis
 
-The objective is to build a logistic regression model on the bank dataset in order to understand which explanatory variables influence the likelihood of a client subscribing a term deposit.
+For our analysis, we've used all variables. We separated variables into categorical and continous and examined each group separately. 
 
-The original dataset is unbalanced as we previously described, having ~40,000 records of 'no' responses and ~5,200 records of 'yes' responses. We are not certain if having an unblanced dataset would affect the predictibility of the model. Thus, we have decided to build two models using a radom sample of 5,000 each for balanced and an unbalanced dataset and observe if there are any differences. We will then use the test dataset to see if one model performs better than the other in term of predictibility. 
-
-### Summary tables of the response variable _y_ versus the categorical variables 
-
-\autoref{fig5} - 13 show the counts and percentage frequencies of the categorical variables for each factor level by the response variable. This allows us to see if a specific level/group of a factor has a higher or lower counts than its counterparts that might contribute to the likelihood of subscribing a term deposit. 
-
-In \autoref{fig5}, the proportions of subscribing a term deposit seems to be varied by job categories even for those with rougly the same sample size. For example, the proportion of subscribing a term deposit is higher for clients who hold an administrative position and the proportion is lower for individuals who are self-employed. Thus, _job_ seems to influence the likelihood of a client subscribing a term deposit. 
-
-Reviewing the frequency tables for the remaining categorical variables, it appears that all the variables could contribute, the proportions vary across the factor levels within each variable.
-
-### Summary statistics of the response variable _y_ versus the continous variables
+By looking at the histograms and boxplots of continous variables in \autoref{fig2} and \autoref{fig3}, we found that _duration_, _balance_, _campaign_ and _previous_ variables might have an impact on our binary respone, while _age_ has no apparant effect on it. Also, we found that _day_ does not seem to have an impact on our dependent variable. 
 
 \autoref{fig14} displays the summary statistics for each continous variables by the response variable _y_, which allows us to see if there are any differences in characteristics between clients who subscribe a term deposit and who do not.
 
-Except the _age_ variable, the mean of the remaining continuous variables varies between two response groups. The standard deviations for some of the variables are high, which suggests that the data points are widely spread out. However, in this section, we will not apply any type of transformations to any of these variables in order to build a simplier model that is easy to interpret. 
+Except the _age_ and _day_ variables, the mean of the remaining continuous variables varies between two response groups. We decided not to transform any of these variables in order to build a simplier model that is easy to interpret.
+
+The count plot of the binary response variable in \autoref{fig4} suggests that the data is unbalanced.
+
+\autoref{fig5} show the counts and percentage frequencies of the categorical variables for each factor level by the response variable. It lets us see if a specific level or group of a factor has a higher or lower counts than its counterparts that might contribute to the likelihood of subscribing a term deposit. 
+
+The proportions of those who subscribed to a term deposit seems to vary by job categories even for those with rougly the same sample size. For example, the proportion of subscribing to a term deposit is higher for clients who hold an administrative position and the proportion is lower for individuals who are self-employed. Thus, _job_ is an effect on the likelihood of a client subscribing to a term deposit. 
+
+Reviewing the frequency tables for the remaining categorical variables, it appears that all the variables could contribute, the proportions vary across the factor levels within each variable.
+
+## Baseline model. Logistic Regression.
+
+For our first two models we fit logistic regression to balanced and unbalanced datasets. We estimated performance of both models on the same test dataset to see if one model has a better predictive power that the other.
 
 ### Model Assumptions
 
-In this section, we will assess whether the model’s assumptions required for logistic regression analysis are met. 
+In this section, we assess whether the model’s assumptions required for logistic regression analysis are met. 
 
-We use the Hosmer and Lemeshow Goodness-of-Fit test with the null hypothesis that the fitted model is correct. The output p-value is a number between 0 and 1 with higher values indicating a better fit. The p-value we obtain from the test is <0.0001 (\autoref{fig15}), which is statistically significant and implies that the null hypothesis needs to be rejected. However, this article critiques on the Hosmer and Lemeshow test and states that it's not an accurate approach to evaluate model fit^[https://support.sas.com/resources/papers/proceedings14/1485-2014.pdf]. Moreover, since our goal is to measure the predcitve power of the model and not the goodness of fit, we will proceed despite not meeting the assumption. 
+We use the Hosmer and Lemeshow Goodness-of-Fit test with the null hypothesis that the fitted model is correct. The output p-value is a number between 0 and 1 with higher values indicating a better fit. The p-value we obtain from the test is <0.0001 (\autoref{fig15}), which is statistically significant and implies that the null hypothesis should be rejected. Paul D. Allison, however, shows in his paper that the Hosmer and Lemeshow test is not accurate enough to evaluate model's fit^[https://support.sas.com/resources/papers/proceedings14/1485-2014.pdf]. Moreover, since our goal is to measure a predcitve power of the model and not the goodness of fit, we will proceed despite not meeting the assumption. 
 
-We also look at the residual diagnostics for any potential leverage points. \autoref{fig16} displays some of the residual and influential plots from the SAS output.When we review all the influential plots, there seems to be no leverage points. 
+We also look at the residual diagnostics for any potential leverage points. \autoref{fig16} displays some of the residual and influential plots from the SAS output. When we review all the influential plots, there seems to be no leverage points. 
 
 Logistic regression also requires that there is little or no multicollinearity among the explanatory variables. The matrix scatter plot in \autoref{fig17} and the correlation matrix in \autoref{fig18} indicate that the continous variables are not highly correlated with each other.
 
-Since there is one record per client, the observations are independent of one another. We will now move on to building a model using the logistic regression method.  
+We assume that observations are independent of one another.
 
-### Model Building
+### Model Fit
 
-First, the overall test was performed to test the null hypothesis that at least one coefficient is different from 0.Using the Likeliness Ratio test (\autoref{fig19}), we reject the null hypothesis at the significant level of 0.05 and conclude that the overall model is significant (p-value <0.0001). 
+First, the overall test was performed to test the null hypothesis that at least one coefficient is different from 0. Using the Likeliness Ratio test, we reject the null hypothesis at the significant level of 0.05 and conclude that the overall model is significan with the p-value <0.0001 (\autoref{fig19}). 
 
-We then include all the main effects, both categorical and continuous variables, to see which predictors are significant. In \autoref{fig20} (left) shows the output with all the main effects and their respective p-values. Based on the results, _education_, _default_, _age_, _balance_, _pdays_, and _previous_ are non-significant at the alpha level of 0.05. Thus, we remove them and refit the model, the output is shown in \autoref{fig20} (right).
-
+We then include all the main effects, both categorical and continuous variables, to see which predictors are significant. \autoref{fig20} (left) shows the output with all the main effects and their respective p-values. Based on the results, _education_, _default_, _age_, _balance_, _pdays_, and _previous_ are non-significant at the alpha level of 0.05. Thus, we remove these predictors and refit the model. After that the new output is shown in \autoref{fig20} (right).
 
 ### Parameter Interpretation
 
-Due to the large number of odds ratio estimates for the categorical variables, we will only discuss a sample for each variable. 
+\autoref{fig21a} displays the coefficient estimates for each factor level and \autoref{fig21b} displays the odd ratio estimates and the confident intervals for each level. Here is our interpretation of a subset of most interesting estimates.  
 
-\autoref{fig21a} displays the coefficient estimates for each factor level and \autoref{fig21b} displays the odd ratio estimates and the confident intervals for each level. 
+#### Job [categorical]
+The odds ratio of subscribing to a term-deposit for clients with unknown job title relative to clients who are entrepreneurs is 0.684 after accounting for other variables. The 95% confidence interval is [0.203,2.302]. In other words, the odds for someone with unknown job title to subscribe a term-deposit is 31.6% less than the odds for an entrepreneur. 
 
-##### Job [categorical]
-The odds ratio of subscribing a term-deposit for clients with unknown job title relative to clients who are entrepreneurs is 0.684 after accounting for other variables. The 95% confidence interval is [0.203,2.302]. In other words, the odds for someone with unknown job title to subscribe a term-deposit is 31.6% less than the odds for an entrepreneur. 
-
-##### Marital [categorical]
+#### Marital [categorical]
 The odds ratio for a single client subscribing a term-deposit relative to a married client is 0.727 after accounting for other variables. The 95% confidence interval is [0.607,0.870]. In other words, the odds for a single client to subscribe a term-deposit is 27.3% less than the odds for a married client. 
 
-##### Housing [categorical]
+#### Housing [categorical]
 The odds ratio of subscribing a term-deposit for clients with a housing loan relative to clients without a housing loan is 2.047 after accounting for other variables. The 95% confidence interval is [1.710,2.451]. In other words, the odds for someone with a housing loan to subscribe a term-deposit is 104.7% higher than the odds for someone without a housing loan. 
 
-##### Loan [categorical]
+#### Loan [categorical]
 The odds ratio of subscribing a term-deposit for clients with a personal loan relative to clients without a housing loan is 1.581 after accounting for other variables. The 95% confidence interval is [1.239,2.019]. In other words, the odds for someone with a personal loan to subscribe a term-deposit is 58.1% higher than the odds for someone without a personal loan. 
 
-##### Contact [categorical]
+#### Contact [categorical]
 The odds ratio of subscribing a term-deposit for clients whose contact communication type are unknown relative to clients who are communicated via cellular phone is 4.478 after accounting for other variables. The 95% confidence interval is [3.358,5.971]. In other words, the odds for someone who is contacted via an unknown method to subscribe a term-deposit is 347.8% higher than the odds for someone who is contacted via cellular. 
 
-##### Month [categorical]
+#### Month [categorical]
 The odds ratio of subscribing a term-deposit for clients who are last contacted in September relative to those who are last contacted in November is 0.080 after accounting for other variables. The 95% confidence interval is [0.042,0.156]. In other words, the odds for a client who is last contacted in September to subscribe a term-deposit is 92% less than the odds for a client who is last contacted in November.
 
-##### Poutcome [categorical]
+#### Poutcome [categorical]
 The odds ratio of subscribing a term-deposit for clients with the unknown previous marketing campaign outcome relative to clients with the failure previous marketing campaign outcome is 1.566 after accounting for other variables. The 95% confidence interval is [1.233,1.989]. In other words, the odds for a client with the unknown previous marketing campaign outcome to subscribe a term-deposit is 56.6% higher than the odds for a client with the failure previous marketing campaign outcome. 
 
-##### Day [Continuous]
+#### Day [Continuous]
 For every 1 unit increases in last contact day of the month, the odds of a client subscribing a term-deposit will increase by a multiplicative factor of 1.013 holding all other variables constant. The odds ratio (for a clients with the last contact day on the 15th compared to the 14th) is 1.013. The 95% confidence interval is [1.002,1.023].
 
-##### Duration [Continuous]
+#### Duration [Continuous]
 The odds of a client subscribing a term-deposit for a client is 1.006 times higher than a client 
 whose last contact duration is 1 second less after accounting for other variables. The 95% confidence interval is [1.005,1.006]. In other words, for every minute increase in the duration of last contact, the odds of a client subscribing a term-deposit will increase by a multiplicative factor of 1.409 (exp[60*0.00572]) holding all other variables constant.
 
-##### Campaign [Continuous]
+#### Campaign [Continuous]
 For every 1 unit increases in number of contacts performed during the campaign, the odds of a client subscribing a term-deposit will decrease by a multiplicative factor of 0.0894 holding all other variables constant. The odds ratio (10 contacts made compared to 11 contacts) is 0.0894. The 95% confidence interval is [0.859,0.929].
 
 ### Prediction Performance
 
 Using the resulting model from the logistic regression, we examine the ROC curve on the balanced training dataset and also on the test dataset for the predictibility power of the model. 
 
-\autoref{fig22} (top) shows the ROC curve of the traning dataset and \autoref{fig22b_ROC} (bottom) represents the ROC curve on the test dataset. The area under the curve (AUC) is commonly used to assess the prediction performance of the logistics model, the closer it's to 1, the better the prediction is. The AUC based on the training data is 0.9096 and 0.9124 for the test data, which indicates that we did not overfit the model and the predicitibility power of the model is quite high. 
+\autoref{fig22} shows the ROC curve of the traning dataset (top) and the ROC curve on the test dataset (bottom). The area under the curve (AUC) is commonly used to assess the prediction performance of the logistics model, the closer it's to 1, the better the prediction is. The AUC based on the training data is 0.9096 and 0.9124 for the test data, which indicates that we did not overfit the model and the predicitibility power of the model is quite high. 
 
 The classification table in \autoref{fig23} can also be used to assess how well the model perform in classifying the dichotomous response variable. The accuracy is measured by its sensitivity (the ability to predict an event correctly) and specificity (the ability to predict a nonevent correctly). At the probability level of 0.5, the model can correctly classify 81.1% of the event and 84.2% of the non-event, with an overall rate of 82.7%. 
 
@@ -142,15 +134,15 @@ The classification table in \autoref{fig26} displays the sensitivity and the spe
 
 Compared to the prior model with the balanced training data, the sensitivity is much lower and the specificity is higher, which makes sense since the latter model is built based on the disproportionate ratio of 'no' and 'yes' responses, having a much higher observations of 'no' than 'yes'. Thus, the model can more accurately classify the nonevents resulting in higher specificity. On the other hand, the sensitivity is low due to the small number of 'yes' records in the training dataset. There is not enough information for the model to correctly classify the event. 
 
-## Objective 2 (Should be changed before submission!!!)
+## Additional Models
 
-### a. Additional Logistic Regression model (LRM) with transformed variables
+### Logistic Regression model (LRM) with transformed variables
 
 ##### Motivation: 
 The transformation of varaibles for this objective is focused in creating categories for continuous variables.This responds to two reasons:
 
 - A logistic regression model will typically assign a weight to continuous a feature, and always think that every feature is either positively or negatively related to the outcome variable. However, for some variables (for example _balance_) the feature might be positively related with the outcome while in other ranges, they are negatively
-related. Discretization of continuous features is a simple but useful way to include additional information that might solve this problem, and we'll pay special attention to those variables that were deemed as non-significant by the model in Objective 1. 
+related. Discretization of continuous features is a simple but useful way to include additional information that might solve this problem, and we'll pay special attention to those variables that were deemed as non-significant by the baseline model. 
 
 - In other instances, the creation of categorical variables responds to the need of highlighting information that is hidden in the continuous variable (e.g. whether a client was previously contacted or not)
 
@@ -179,21 +171,21 @@ We can generate a list of the coefficients for the value of lambda that gives mi
 
 ##### Prediction Performance
 
-Regarding predictive accuracy, the model with the new categorical variables shows a similiar performance than the model developed for objective 1. The model achieved an accuracy of 82.58% for the training set and 85.9% for the test set. However, this new model didn't perform as well when we measure the AUC indicator, which was lower than the other logistic regression model. The ROC curve is shown below. (Insert image here!!!)
+Regarding predictive accuracy, the model with the new categorical variables shows a similiar performance than the model developed for objective 1. The model achieved an accuracy of 82.58% for the training set and 85.9% for the test set. However, this new model didn't perform as well when we measure the AUC indicator, which was lower than the other logistic regression model. The ROC curve is shown in \autoref{fig27}.
 
-### b. Linear Discriminant Analysis model (LDA)
+### Linear Discriminant Analysis model (LDA)
 
 The next requirement is to develop a LDA model using only the continuous predictors. This posed a serious challenge, because only 6 variables in the dataset are continous. Additionally, the logistic regression models we developed found that out of these 6 variables, four were non-significant (age, balance, pdays and previous), although one of the variables (duration) is perhaps the strongest predictor of all.
 
-Likely due to these limitations, the LDA model performed poorly. Examining the confusion matrix, we conclude that the model had an accuracy of only 74.1%, much lower than the logistic regression. The AUC score was also much lower (include chart of the AUC below!!!).
+Likely due to these limitations, the LDA model performed poorly. Examining the confusion matrix, we conclude that the model had an accuracy of only 74.1%, much lower than the logistic regression. The AUC score was also much lower, as you can see in \autoref{fig28}.
 
 The conclusion from the LDA model is that the categories in the outcome binomial variable are not clearly separable on the continuous features. The small number of continuous features and the knowledge we had about the low predicting power of these features would make us reject these types of models for this problem. 
 
-### c. Non-parametric approach: Random Forests (RF)
+### Non-parametric model. Random Forest (RF)
 
 The third additional model we developed is based on the Random Forest package in R. To make this model work smoothly, we decided to modify the original dataset as follows: i) Create dummies for all categorical variables, ii) Create an additional dummy variable that indicates whether the client was previously contacted or not. 
 
-Reviewing the accuracy and AUC of the random forest model, it performed significantly better than LDA model, and marginally better than the LRM model. This model is especially good at predicting the "Yes" cases: those people who will actually open the deposit, with a sensitivity of 88%. However, this model performed relatively poorly on the overall accuracy on the test set, which was brought down by a poor specificity rate. This might be due to the fact that the proportion of "Yes" in the test set was very low. (include chart of the AUC below!!)
+Reviewing the ROC curve, accuracy and AUC of the random forest model (\autoref{fig29}), it performed significantly better than LDA model, and marginally better than the LRM model. This model is especially good at predicting the "Yes" cases: those people who will actually open the deposit, with a sensitivity of 88%. However, this model performed relatively poorly on the overall accuracy on the test set, which was brought down by a poor specificity rate. This might be due to the fact that the proportion of "Yes" in the test set was very low.
 
 Other disadvantages of this model are:
 
@@ -203,18 +195,7 @@ Other disadvantages of this model are:
 
 ## Comparison of all models and Conclusion
 
-The following table shows a comparison of the performance of the models, along 4 metrics:
-
-
-Summary      |Training Set Statistics          	    | Test Set Statistics                |	
--------------|--------------------------------------|------------------------------------|------
-
-Model        |Accuracy |	Sensitivity	| Specificity	| Accuracy |Sensitivity	|Specificity |	AUC
--------------|---------|--------------|-------------|----------|------------|------------|------
-LR model 1	 |	0.827	 |	  0.811     |   0.842     |          |            |            | 0.912
-LR model 2	 |  0.824	 |    0.796	    |   0.852     | 0.859	   |  0.8631	  |   0.793	   | 0.912
-LDA	         |  0.741	 |    0.658    	|   0.824	    | 0.647	   |  0.827	    |   0.636	   | 0.805
-Random Forest|	0.854	 |    0.884	    |   0.825	    | 0.828	   |  0.879	    |   0.825	   | 0.923
+\autoref{table2} shows a comparison of the performance of the models, along 4 metrics.
 
 Based on this information, we will choose the predictions from the random forest model. The limitation of low interpretability of the results can be overcome by understanding how different factors affect the outcome, as explained in the Exploratory Data Analysis section. 
 
@@ -225,7 +206,7 @@ All code used to generate models, plots and report related to this work can be f
 
 ## Figures and Tables
 
-\begin{table}
+\begin{table}[h]
 \centering
  \begin{tabular}{|p{0.2\linewidth}|p{0.2\linewidth}|p{0.4\linewidth}|}
  \hline
@@ -272,6 +253,21 @@ All code used to generate models, plots and report related to this work can be f
   \caption{Count plots of categorical variables.}
   \label{fig3}
 \end{figure}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+Summary       & \multicolumn{3}{l|}{Training Set Statistics} & \multicolumn{3}{l|}{Test Set Statistics} &       \\ \hline
+Model         & Accuracy    & Sensitivity    & Specificity   & Accuracy   & Sensitivity  & Specificity  & AUC   \\ \hline
+LR model 1    & 0.827       & 0.811          & 0.842         &            &              &              & 0.912 \\ \hline
+LR model 2    & 0.824       & 0.796          & 0.852         & 0.828      & 0.8631       & 0.793        & 0.912 \\ \hline
+LDA           & 0.741       & 0.658          & 0.824         & 0.828      & 0.827        & 0.636        & 0.805 \\ \hline
+Random Forest & 0.854       & 0.884          & 0.825         & 0.828      & 0.879        & 0.825        & 0.923 \\ \hline
+\end{tabular}
+\caption{Performance characteristics of all models.}
+ \label{table2}
+\end{table}
 
 \begin{figure}
   \centering
@@ -446,5 +442,26 @@ All code used to generate models, plots and report related to this work can be f
     \includegraphics[width=0.5\textwidth]{images/fig26_ctable.png} 
   \caption{The classification table based on the unbalanced training dataset.}
   \label{fig26}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/LRM-2.png} 
+  \caption{ROC curve for the second LR model.}
+  \label{fig27}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/LDA-1.png} 
+  \caption{ROC curve for the LDA model.}
+  \label{fig28}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{images/RF-1.png} 
+  \caption{ROC curve for the Random Forest model.}
+  \label{fig29}
 \end{figure}
 
