@@ -5,10 +5,8 @@ library(data.table)
 train <- fread("https://raw.githubusercontent.com/VolodymyrOrlov/MSDS6372_Project2/master/data/bank-balanced-train.csv", stringsAsFactors = TRUE)
 test <- fread("https://raw.githubusercontent.com/VolodymyrOrlov/MSDS6372_Project2/master/data/bank-test.csv", stringsAsFactors = TRUE)
 
-#Remove first column:
-
-trainLR <- train[,2:18]
-testLR <- test[,2:18]
+trainLR <- train[,1:17]
+testLR <- test[,1:17]
 
 #Age: divide into 3 age groups
 trainLR$adult <- ifelse(trainLR$age <= 35, 1, 0)

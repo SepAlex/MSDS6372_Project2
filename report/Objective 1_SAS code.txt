@@ -1,0 +1,123 @@
+libname mydata "/home/schew0/Swee_SMU";
+
+/* Importing bank data */
+proc import datafile= "/home/schew0/Swee_SMU/bank-balanced-train.csv"
+    dbms= csv replace
+    out= balanced_train;
+    getnames= yes;
+    guessingrows=70;
+run;
+
+proc import datafile= "/home/schew0/Swee_SMU/bank-unbalanced-train.csv"
+    dbms= csv replace
+    out= unbalanced_train;
+    getnames= yes;
+    guessingrows=60;
+run;
+
+proc import datafile= "/home/schew0/Swee_SMU/bank-test.csv"
+    dbms= csv replace
+    out= bank_test;
+    getnames= yes;
+    guessingrows=60;
+run;
+
+/*** Balanced Train Dataset ***/
+/* Explore the freqency table of categorical variables with the response variable */ 
+proc freq data=balanced_train;
+tables job*y marital*y education*y default*y housing*y loan*y contact*y month*y poutcome*y/ chisq relrisk;
+run;quit;
+
+/* Run proc means to get summary statistics on continuous variables */
+proc means data=balanced_train;
+class y;
+run;
+
+/* Scatterplot of the continous variables */
+proc sgscatter data = balanced_train;
+matrix age balance day duration campaign pdays previous;
+run;
+
+/* Correlation Matrix of the continous variables */
+proc corr data = balanced_train;
+var age balance day duration campaign pdays previous;
+run;
+
+/* proc logistic */
+proc logistic data=balanced_train PLOTS(MAXPOINTS=NONE);
+class job marital education default housing loan contact month poutcome / param=ref;
+model y(event='yes')= job marital education default housing loan contact month poutcome age balance day duration campaign pdays previous/ scale=none aggregate influence lackfit;
+run;quit;
+
+/* proc logistic for parameter estimates (after removing the non-sig predictors) */
+proc logistic data=balanced_train PLOTS(MAXPOINTS=NONE);
+class job marital housing loan contact month poutcome / param=ref;
+model y(event='yes')= job marital housing loan contact month poutcome day duration campaign/ scale=none aggregate influence lackfit;
+run;quit;
+
+/* ROC curve (balanced_train) */
+ods graphics on;
+proc logistic data=balanced_train;
+class job marital housing loan contact month poutcome / param=ref;
+model y(event='yes') = job marital housing loan contact month poutcome day duration campaign/ ctable pprob=.5 outroc=troc;
+score data=bank_test out=valpred outroc=vroc;
+roc; roccontrast;
+run;
+
+/* To obtain ctable for (bank_test) */
+ods graphics on;
+proc logistic data=bank_test;
+class job marital housing loan contact month poutcome / param=ref;
+model y(event='yes') = job marital housing loan contact month poutcome day duration campaign/ ctable pprob=.5;
+run;
+
+
+/*** Unbalanced Train Dataset ***/
+/* Explore the freqency table of categorical variables with the response variable */ 
+proc freq data=unbalanced_train;
+tables job*y marital*y education*y default*y housing*y loan*y contact*y month*y poutcome*y/ chisq relrisk;
+run;quit;
+
+/* Run proc means to get summary statistics on continuous variables */
+proc means data=unbalanced_train;
+class y;
+run;
+
+/* Scatterplot of the continuous variables */
+proc sgscatter data = unbalanced_train;
+/* title "Scatterplot Matrix of Car Variables"; */
+matrix age balance day duration campaign pdays previous;
+run;
+
+/* Correlation Matrix of the continuous variables */
+proc corr data = unbalanced_train;
+var age balance day duration campaign pdays previous;
+run;
+
+/* proc logistic */
+proc logistic data=unbalanced_train PLOTS(MAXPOINTS=NONE);
+class job marital education default housing loan contact month poutcome / param=ref;
+model y(event='yes')= job marital education default housing loan contact month poutcome age balance day duration campaign pdays previous/ scale=none aggregate influence lackfit;
+run;quit;
+
+/* proc logistic for parameter estimates  (after removing the non-sig predictors) */
+proc logistic data=unbalanced_train PLOTS(MAXPOINTS=NONE);
+class job marital education housing loan contact month poutcome / param=ref;
+model y(event='yes')= job marital education housing loan contact month poutcome day duration campaign/ scale=none aggregate influence lackfit;
+run;quit;
+
+/* ROC curve (unbalanced) */
+ods graphics on;
+proc logistic data=unbalanced_train;
+class job marital education housing loan contact month poutcome / param=ref;
+model y(event='yes') = job marital education housing loan contact month poutcome day duration campaign/ ctable pprob=.5 outroc=troc;
+score data=bank_test out=valpred outroc=vroc;
+roc; roccontrast;
+run;
+
+/* To obtain ctable for (bank_test) */
+ods graphics on;
+proc logistic data=bank_test;
+class job marital education housing loan contact month poutcome / param=ref;
+model y(event='yes') = job marital education housing loan contact month poutcome day duration campaign/ ctable pprob=.5;
+run;
