@@ -24,8 +24,8 @@ test <- fread("https://raw.githubusercontent.com/VolodymyrOrlov/MSDS6372_Project
 
 #Remove first column:
 
-trainLR <- train[,2:18]
-testLR <- test[,2:18]
+trainLR <- train[,1:17]
+testLR <- test[,1:17]
 
 #Age: divide into 3 age groups
 trainLR$adult <- ifelse(trainLR$age <= 35, 1, 0)
@@ -120,66 +120,66 @@ coef(cvLR, s = "lambda.min")
 ```
 ## 66 x 1 sparse Matrix of class "dgCMatrix"
 ##                                                   1
-## (Intercept)                            -1.493309336
-## jobadmin.                               0.136058325
-## jobblue-collar                         -0.175171084
-## jobentrepreneur                        -0.160931144
-## jobhousemaid                           -0.419467139
+## (Intercept)                            -1.134923328
+## jobadmin.                               .          
+## jobblue-collar                         -0.166562895
+## jobentrepreneur                         .          
+## jobhousemaid                           -0.133443311
 ## jobmanagement                           .          
 ## jobretired                              .          
-## jobself-employed                       -0.016883990
+## jobself-employed                        .          
 ## jobservices                             .          
-## jobstudent                              0.421203503
+## jobstudent                              0.241007323
 ## jobtechnician                           .          
-## jobunemployed                           0.083008125
+## jobunemployed                           .          
 ## jobunknown                              .          
 ## maritaldivorced                         .          
-## maritalmarried                         -0.153586280
+## maritalmarried                         -0.096662090
 ## maritalsingle                           .          
-## educationprimary                       -0.106553691
+## educationprimary                       -0.027992937
 ## educationsecondary                      .          
-## educationtertiary                       0.116824854
-## educationunknown                        0.128193503
-## default                                -0.007894184
-## housing                                -0.595061618
-## loan                                   -0.262193117
-## contactcellular                         0.102891204
+## educationtertiary                       0.021608402
+## educationunknown                        .          
+## default                                 .          
+## housing                                -0.533439356
+## loan                                   -0.194112172
+## contactcellular                         0.028128931
 ## contacttelephone                        .          
-## contactunknown                         -1.084411099
-## monthapr                                0.687466839
+## contactunknown                         -0.922758093
+## monthapr                                0.468406701
 ## monthaug                                .          
-## monthdec                                0.599286188
-## monthfeb                                0.396192399
-## monthjan                               -0.403482088
-## monthjul                               -0.256497187
-## monthjun                                0.512558121
-## monthmar                                2.238476386
-## monthmay                               -0.132764901
-## monthnov                               -0.323826326
-## monthoct                                1.448878842
-## monthsep                                1.655387389
-## duration                                0.005221767
+## monthdec                                0.128710633
+## monthfeb                                0.180372053
+## monthjan                               -0.140494075
+## monthjul                               -0.227714185
+## monthjun                                0.182302007
+## monthmar                                1.749202246
+## monthmay                               -0.160708404
+## monthnov                               -0.146299432
+## monthoct                                1.093587053
+## monthsep                                1.227490561
+## duration                                0.004576592
 ## poutcomefailure                         .          
-## poutcomeother                           0.056472916
-## poutcomesuccess                         2.063857655
-## poutcomeunknown                        -0.242091476
+## poutcomeother                           .          
+## poutcomesuccess                         1.784396905
+## poutcomeunknown                        -0.272449857
 ## adult                                   .          
-## middleaged                             -0.268732806
-## elderly                                 0.843172407
-## balance_pos0 to 100                    -0.135651009
+## middleaged                             -0.243865933
+## elderly                                 0.618366350
+## balance_pos0 to 100                     .          
 ## balance_pos100 to 500                   .          
-## balance_pos2000 to 10000                0.076307416
+## balance_pos2000 to 10000                0.016376053
 ## balance_pos500 to 2000                  .          
-## balance_posmore than 10000              0.296748761
-## balance_posNegative balance            -0.456146623
-## balance_posZero balance                -0.200884884
-## campaign_catCampaign Level 1            0.283459345
+## balance_posmore than 10000              .          
+## balance_posNegative balance            -0.274625583
+## balance_posZero balance                -0.052687969
+## campaign_catCampaign Level 1            0.215386138
 ## campaign_catCampaign Level 2            .          
 ## campaign_catCampaign Level 3            .          
-## campaign_catCampaign Level 4           -0.292345145
+## campaign_catCampaign Level 4           -0.218679971
 ## pdays_contacted                         .          
-## months_passed1 or 2 months              0.138634688
-## months_passed3 to 6 months              0.535579563
+## months_passed1 or 2 months              .          
+## months_passed3 to 6 months              0.394395868
 ## months_passedMore than 6 months         .          
 ## months_passedNot Contacted              .          
 ## not_contacted                           .          
@@ -199,8 +199,8 @@ table(LRtrain.class, trainLR$y)
 ```
 ##              
 ## LRtrain.class    0    1
-##             0 2132  508
-##             1  368 1992
+##             0 2130  504
+##             1  370 1996
 ```
 
 ```r
@@ -220,8 +220,8 @@ table(LRtest.class, testLR$y)
 ```
 ##             
 ## LRtest.class   0   1
-##            0 815  12
-##            1 127  46
+##            0 813  12
+##            1 129  46
 ```
 
 ```r
@@ -246,7 +246,7 @@ You can also embed plots, for example:
 #LDA model
 
 #Extracting the continuous variables from the model
-trainLDA <- train[,c(2,7,13,14,15,16,18)]
+trainLDA <- train[,c(1,6,12,13,14,15,17)]
 
 #Scaling the responses (z-score or Min-max normalization are available, I chose z-value)
 
@@ -272,7 +272,7 @@ table(predLDAtrain$class, trainLDA$y)
 
 ```r
 #Model testing
-testLDA <- test[,c(2,7,13,14,15,16,18)]
+testLDA <- test[,c(1,6,12,13,14,15,17)]
 testLDA <- as.data.frame(scale(testLDA[,-7]))
 testLDA$y <- test$y
 LDA.results <- predict( LDA, testLDA )
@@ -358,8 +358,8 @@ table(RF1$predicted, trainRF$y)
 ```
 ##      
 ##         no  yes
-##   no  2055  284
-##   yes  445 2216
+##   no  2062  279
+##   yes  438 2221
 ```
 
 ```r
@@ -368,112 +368,112 @@ importance(RF1)
 ```
 
 ```
-##                               no         yes MeanDecreaseAccuracy
-## day                  25.58306120   1.3358720           21.2181488
-## job_admin.            1.95198873  -1.7291691            0.2064931
-## job_entrepreneur     -2.10110780   0.7354142           -0.8865609
-## job_housemaid         3.42027016   4.5886378            5.6227104
-## job_management        3.29597591   3.8453999            5.3909589
-## job_retired           4.24199287   6.1981125            8.2618537
-## job_services         -0.34036718  -0.7162602           -0.7852295
-## job_student           5.97240973   6.6908716            8.8073001
-## job_technician        2.81016041   2.5603256            3.8968749
-## job_unemployed       -0.34719983  -2.9841249           -2.4204593
-## job_unknown          -2.01713976  -0.7358906           -1.7976299
-## marital_divorced     -2.50726096   2.5197339            0.2395830
-## marital_married       2.69676168   5.3463502            5.6518009
-## marital_single        2.12349005   7.9163737            8.1632972
-## education_primary     1.01535414   6.4738936            5.7623050
-## education_secondary   2.40944792   1.4150766            2.8315812
-## education_tertiary    3.61313346   4.7295186            6.4210399
-## education_unknown     0.08488626   2.9886503            2.4550364
-## default_no           -2.16074686   2.2847237            0.7142918
-## default_yes          -0.55232251   4.7204980            3.2878485
-## housing_no           17.18860713  18.1962438           21.5938872
-## housing_yes          16.61625956  15.6545585           19.6176589
-## loan_no               3.50318419  12.3985488           11.9023680
-## loan_yes              2.26603548  12.4529999           11.3744828
-## contact_cellular     18.86927632   9.3397210           20.6857324
-## contact_telephone     1.94818885   7.0018315            6.4997030
-## contact_unknown      29.17313981  13.2159058           30.6639871
-## month_apr            24.50188680  21.7767146           30.6505303
-## month_aug            28.29757372  -5.7104340           25.1332835
-## month_dec             3.83685414  -1.2879661            1.9387099
-## month_feb            19.97635373   6.9077499           20.8415226
-## month_jan            16.60268406  -6.1422070           10.3026254
-## month_jul            20.88116970   1.8431806           17.7173265
-## month_jun            22.03118126   0.4382697           22.0554553
-## month_mar            22.14762995  33.0109715           33.5461653
-## month_may            18.57734675   4.7745502           19.9339702
-## month_nov            21.86555569  -5.3378149           18.5414224
-## month_oct            28.46377495  16.6544815           30.0316840
-## month_sep            21.30920063   9.5297469           22.4914451
-## poutcome_failure     14.92231481 -10.3161363            9.6430524
-## poutcome_other        7.93537409  -4.1724510            4.0397636
-## poutcome_success     15.80185989  33.9895101           30.4519373
-## poutcome_unknown     12.52852817   8.4937915           13.2775744
-## age                  20.58759105  20.6396775           28.4609496
-## balance               9.55627306  13.1036305           16.1118995
-## duration            122.45241671 137.7446419          148.4402341
-## campaign             10.69250132   7.8502939           13.2834852
-## pdays                22.17702491   9.1077653           21.2567276
-## previous             12.10461204   8.8988626           12.7815006
-## contacted            13.06600152   9.6701026           14.1510988
-## job_blue_collar       2.03903939  10.9310930            9.8072304
-## job_self_employed     1.32851904   0.4916013            1.2645898
+##                              no         yes MeanDecreaseAccuracy
+## day                  26.0806189   4.6499030         2.542155e+01
+## job_admin.            0.7895398  -1.2539908        -3.551731e-01
+## job_entrepreneur     -3.4093954  -0.2140627        -2.531197e+00
+## job_housemaid         1.4406019   3.6035218         3.758654e+00
+## job_management        5.2967741   1.6732124         5.132164e+00
+## job_retired           4.9667439   5.9170543         8.544873e+00
+## job_services         -1.2014381  -2.6133907        -2.762198e+00
+## job_student           5.1220668   4.5094004         6.857540e+00
+## job_technician        0.6980102   4.1081782         3.382691e+00
+## job_unemployed       -0.3251848  -0.8739377        -8.631498e-01
+## job_unknown          -0.6617215  -1.9273764        -1.864354e+00
+## marital_divorced      0.8758650   2.0103902         2.065419e+00
+## marital_married       3.3456991   3.9031246         5.662222e+00
+## marital_single        2.0526421   6.7087454         6.974451e+00
+## education_primary     0.5963795   6.1649479         5.236565e+00
+## education_secondary   2.3904674   2.6877211         3.813281e+00
+## education_tertiary    2.4960142   4.4404711         5.259307e+00
+## education_unknown     1.0986439   0.8712588         1.359844e+00
+## default_no           -2.3302031   3.2605585         1.378393e+00
+## default_yes          -3.1631439   2.4884514         5.942121e-04
+## housing_no           16.9367937  17.2304165         2.119223e+01
+## housing_yes          17.1073817  16.8820349         2.092771e+01
+## loan_no               2.4238608  12.0796709         1.095456e+01
+## loan_yes              0.4879796  11.3739336         9.841877e+00
+## contact_cellular     18.7042689  11.1105313         2.046768e+01
+## contact_telephone     2.0914284   6.6545048         7.486662e+00
+## contact_unknown      26.4068876  12.9470948         2.849488e+01
+## month_apr            25.7849928  21.5665767         3.114961e+01
+## month_aug            26.6885348  -2.5887836         2.491586e+01
+## month_dec             6.0867373  -1.4751035         3.611988e+00
+## month_feb            19.4507812   5.3362639         2.009166e+01
+## month_jan            17.9783277  -7.0193117         1.193078e+01
+## month_jul            20.6491583   4.4478737         1.973618e+01
+## month_jun            23.2853282  -0.5087738         2.404889e+01
+## month_mar            22.7319957  33.2865920         3.480342e+01
+## month_may            19.7414304   5.4724928         2.037353e+01
+## month_nov            21.2895706  -6.7874133         1.776466e+01
+## month_oct            29.5604130  15.5096000         3.054432e+01
+## month_sep            21.2804552  11.6441620         2.338294e+01
+## poutcome_failure     15.4385371 -10.6073877         9.803150e+00
+## poutcome_other        6.7112362  -5.2050789         3.167509e+00
+## poutcome_success     16.3777250  33.8688850         2.981903e+01
+## poutcome_unknown     12.6131376   8.5079522         1.296455e+01
+## age                  20.4105897  19.1530329         2.784626e+01
+## balance               9.9298523  12.6431098         1.585412e+01
+## duration            118.6158727 139.2753476         1.436032e+02
+## campaign             10.6271812   7.0920987         1.328684e+01
+## pdays                22.7152261  10.7034882         2.267479e+01
+## previous             12.4347135  10.0958432         1.380849e+01
+## contacted            11.6247591   8.3737601         1.272369e+01
+## job_blue_collar       2.1164062  11.8925649         1.152890e+01
+## job_self_employed     2.3900216  -0.6143500         1.218898e+00
 ##                     MeanDecreaseGini
-## day                       129.104984
-## job_admin.                 17.709994
-## job_entrepreneur            8.242428
-## job_housemaid               6.972551
-## job_management             19.448753
-## job_retired                11.519853
-## job_services               12.879811
-## job_student                 8.218188
-## job_technician             20.122369
-## job_unemployed              8.281665
-## job_unknown                 1.333828
-## marital_divorced           14.162814
-## marital_married            23.098034
-## marital_single             19.006713
-## education_primary          14.706539
-## education_secondary        21.732527
-## education_tertiary         20.798446
-## education_unknown           8.652097
-## default_no                  3.213215
-## default_yes                 3.136619
-## housing_no                 39.494105
-## housing_yes                37.989707
-## loan_no                    16.796170
-## loan_yes                   15.915858
-## contact_cellular           38.457285
-## contact_telephone           9.749311
-## contact_unknown            59.600480
-## month_apr                  33.825607
-## month_aug                  26.301383
-## month_dec                   2.922999
-## month_feb                  21.101650
-## month_jan                  12.800152
-## month_jul                  23.668082
-## month_jun                  22.313202
-## month_mar                  29.435083
-## month_may                  30.425182
-## month_nov                  20.366627
-## month_oct                  25.624611
-## month_sep                  18.357756
-## poutcome_failure           15.780927
-## poutcome_other              7.048015
-## poutcome_success           77.411404
-## poutcome_unknown           27.864731
-## age                       159.309783
-## balance                   163.995350
-## duration                  761.245770
-## campaign                   72.800760
-## pdays                      77.138857
-## previous                   44.867588
-## contacted                  28.340755
-## job_blue_collar            22.039649
-## job_self_employed           8.109480
+## day                       131.275925
+## job_admin.                 17.793917
+## job_entrepreneur            8.096942
+## job_housemaid               6.935036
+## job_management             19.487617
+## job_retired                11.466356
+## job_services               12.668912
+## job_student                 8.264480
+## job_technician             19.843690
+## job_unemployed              7.802502
+## job_unknown                 1.329143
+## marital_divorced           14.420689
+## marital_married            23.224726
+## marital_single             19.914556
+## education_primary          14.491421
+## education_secondary        21.264240
+## education_tertiary         20.567329
+## education_unknown           8.763304
+## default_no                  3.212921
+## default_yes                 3.332103
+## housing_no                 38.426052
+## housing_yes                38.888541
+## loan_no                    16.668744
+## loan_yes                   16.088197
+## contact_cellular           35.928895
+## contact_telephone           9.908673
+## contact_unknown            59.973852
+## month_apr                  33.023821
+## month_aug                  26.384072
+## month_dec                   2.982796
+## month_feb                  21.573846
+## month_jan                  12.278500
+## month_jul                  23.400568
+## month_jun                  22.299132
+## month_mar                  28.847529
+## month_may                  30.225712
+## month_nov                  20.228968
+## month_oct                  26.367136
+## month_sep                  18.415754
+## poutcome_failure           16.202106
+## poutcome_other              7.107964
+## poutcome_success           74.080195
+## poutcome_unknown           25.783845
+## age                       156.564750
+## balance                   163.466583
+## duration                  767.907935
+## campaign                   72.833065
+## pdays                      81.739708
+## previous                   47.351463
+## contacted                  23.473220
+## job_blue_collar            22.896816
+## job_self_employed           8.108618
 ```
 
 ```r
@@ -487,8 +487,8 @@ table(predRFtest, testRF$y)
 ```
 ##           
 ## predRFtest  no yes
-##        no  778   8
-##        yes 164  50
+##        no  780   7
+##        yes 162  51
 ```
 
 ```r

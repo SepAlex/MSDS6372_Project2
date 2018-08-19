@@ -25,8 +25,8 @@ test <- fread("https://raw.githubusercontent.com/VolodymyrOrlov/MSDS6372_Project
 
 #Remove first column:
 
-trainLR <- train[,2:18]
-testLR <- test[,2:18]
+trainLR <- train[,1:17]
+testLR <- test[,1:17]
 
 #Age: divide into 3 age groups
 trainLR$adult <- ifelse(trainLR$age <= 35, 1, 0)
@@ -149,7 +149,7 @@ You can also embed plots, for example:
 #LDA model
 
 #Extracting the continuous variables from the model
-trainLDA <- train[,c(2,7,13,14,15,16,18)]
+trainLDA <- train[,c(1,6,12,13,14,15,17)]
 
 #Scaling the responses (z-score or Min-max normalization are available, I chose z-value)
 
@@ -166,7 +166,7 @@ predLDAtrain <- predict(LDA, trainLDA)
 table(predLDAtrain$class, trainLDA$y)
 
 #Model testing
-testLDA <- test[,c(2,7,13,14,15,16,18)]
+testLDA <- test[,c(1,6,12,13,14,15,17)]
 testLDA <- as.data.frame(scale(testLDA[,-7]))
 testLDA$y <- test$y
 LDA.results <- predict( LDA, testLDA )

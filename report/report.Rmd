@@ -2,7 +2,7 @@
 title: "MSDS 6372 Project 2 - Using classification methods to determine an outcome of a telemarketing campaign."
 author: "Swee K Chew, Rene Pineda, Volodymyr Orlov"
 output:
-    pdf_document: default
+   
     html_document:
     df_print: paged
 header-includes: \usepackage{amsmath}
@@ -146,10 +146,9 @@ Since the prediction accuracy is better with the balanced training data, we will
 #### Motivation: 
 The transformation of varaibles for this objective is focused on creating categories for the continuous variables. This responds to two reasons:
 
-- A logistic regression model will typically assign a weight to a continuous feature, and always think that every feature is either positively or negatively related to the outcome variable. However, for some variables (for example _balance_) the feature might be positively related with the outcome, while in other ranges, they are negatively
-related. Discretization of continuous features is simple but is a useful way to include additional information that might solve this problem, and we will pay special attention to those variables that were deemed as non-significant by the baseline model. 
+- A logistic regression model will typically assign a weight to a continuous feature, and always think that every feature is either positively or negatively related to the outcome variable. However, for some variables (for example _balance_) the feature might be positively related with the outcome for one range of values, and negatively related for other ranges. Discretization of continuous features is simple but is a useful way to include additional information that might solve this problem, and we will pay special attention to those variables that were deemed as non-significant by the baseline model. 
 
-- In other instances, the creation of categorical variables responds to the need of highlighting information that is hidden in the continuous variable (e.g. whether a client was previously contacted or not)
+- In other instances, the creation of categorical variables responds to the need of highlighting information that is hidden or not explicit in the continuous variable. For example, the variable _pdays_ contains information about whether a client was previously contacted or not, but because this is indicated by assigning the variable a value of -1, this information can't be picked up by a regression model that uses the continuous variable.
 
 The upper and lower limits for the categories are based on our analysis of the distribution of the features.
 
@@ -163,34 +162,34 @@ Create categories for negative balance, zero balance, and 5 levels for positive 
 Create categories for clients that were contacted only once or twice and for those who were contacted more than two times during the campaign.
 
 ##### pdays:
-Add variable to indicate whether a client was previously contacted or not. Additionally, convert days to months and create three categories depending on how much time had passed since the client was contacted.
+Add variable to indicate whether a client was previously contacted or not. Additionally, convert days to months and create three categories depending on how much time had passed since the client was last contacted.
 
 ##### previous:
-Create categories for clients that were previously contacted only once or twice and those who were contacted more times.
+Create a category for clients that were previously contacted only once or twice and another category for those who were contacted more times.
 
 #### Model Building
 
 To create the logistic regression model, we use the Glmnet package in R, which fits a generalized linear model via penalized maximum likelihood. We perform a cross-validation fit, which is shown in \autoref{fig28}. The potential model that minimizes the misclassification error includes between 23 to 42 features. 
 
-We can generate a list of the coefficients for the value of lambda that gives minimum mean cross-validated error. By examining these coefficients, we can tell that the new categories we created for the _balance_, _campaign_, and _pdays_ variables are not selected by the model, similar to the results of the first model we produced. However, it is interesting to notice that the selection process picks up the negative balance, zero balance, balance between $2,000 and $10,000, and balance greater than $10,000 as important, indicating that splitting _balance_ into categorical variables is useful.
+We can generate a list of the coefficients for the value of lambda that gives minimum mean cross-validated error, which is part of the output of the Glmnet package. By examining these coefficients, we can tell that the new categories we created for the _balance_, _campaign_, and _pdays_ variables are not selected by the model, similar to the results of the first model we produced. However, it is interesting to notice that the selection process picks up the negative balance, zero balance, balance between $2,000 and $10,000, and balance greater than $10,000 as important, indicating that splitting _balance_ into categorical variables is useful.
 
 #### Prediction Performance
 
-Regarding predictive accuracy, the model with the new categorical variables shows a similiar performance compared to the first model developed on the balanced dataset. The model achieves an accuracy of 82.58% for the training set and 85.9% for the test set. However, this new model does not perform as well when we measure the AUC indicator, which is slightly lower than the first logistic regression model. The AUC values are 0.9115 and 0.9124 respectively. The ROC curve of the new model is shown in \autoref{fig29}.
+Regarding predictive accuracy, the model with the new categorical variables shows a similiar performance compared to the first model developed on the balanced dataset. The model achieves an accuracy of 82.4% for the training set and 85.9% for the test set. This new model shows the same performance when we measure the AUC indicator, which is the same than the first logistic regression model (0.912). The ROC curve of the new model is shown in \autoref{fig29}.
 
 ### Linear Discriminant Analysis model (LDA)
 
-Next, we develop a LDA model using only the continuous predictors. This poses a serious challenge because only 6 variables in the dataset are continuous. Additionally, the logistic regression models we have developed indicate that out of these 6 variables, four are non-significant (_age_, _balance_, _pdays_ and _previous_), although one of the variables (_duration_) is perhaps the strongest predictor of all.
+Next, we develop a LDA model using only the continuous predictors. This poses a serious challenge because only 6 variables in the dataset are continuous. Additionally, the logistic regression models we have developed indicate that out of these 6 variables, four are non-significant (_age_, _balance_, _pdays_ and _previous_) and their predictive power is low, although one continuous variable (_duration_) is perhaps the strongest predictor of all.
 
-Likely due to these limitations, the LDA model performs poorly. Examining the confusion matrix, we conclude that the model has an accuracy of only 74.1%, much lower than the logistic regression models. Based on the ROC curve in \autoref{fig30}, the AUC score of 0.805 is also much lower compared to the logistic regression models. 
+Likely due to these limitations, the LDA model performs poorly. Examining the confusion matrix, we conclude that the model has an accuracy of only 74.1% on the training set and 64.7% on the testing set, much lower than the logistic regression models. Based on the ROC curve in \autoref{fig30}, the AUC score of 0.805 is also much lower compared to the logistic regression models. 
 
-The conclusion from the LDA model is that the categories in the outcome binomial variable are not clearly separable on the continuous features. Thus, the LDA model is not an appropriate method for this specific dataset. 
+The conclusion from the LDA model is that the two categories in the outcome binomial variable are not clearly separable on the continuous features. Thus, the LDA model is not an appropriate method for this specific dataset. 
 
 ### Non-parametric model. Random Forest (RF)
 
 The third additional model we developed is based on the Random Forest package in R. To make this model works smoothly, we decided to modify the original dataset as follows: i) Create dummy variables for all the categorical predictors, ii) Create an additional dummy variable that indicates whether the client was previously contacted or not. 
 
-Reviewing the prediction accuracy and the AUC of the random forest model in ROC curve (\autoref{fig31}), it performs significantly better than LDA model, and marginally better than the logistic regression models. This model is especially good at predicting the 'yes' cases: clients who will actually open the term deposit, with a sensitivity of 88%. However, this model performs relatively poorly on the overall accuracy on the test set, which is brought down by a poor sensitivity rate. This might be due to the fact that the proportion of 'yes' in the test set was very low.
+Reviewing the prediction accuracy and the AUC of the random forest model in ROC curve (\autoref{fig31}), it performs significantly better than LDA model, and marginally better than the logistic regression models. The accuracy of the model is 85.4% on the training set and 82.6% on the testing set. This model is especially good at predicting the 'yes' cases (clients who will actually sign up for the term deposit), with a sensitivity of around 88% on both the training and testing sets. However, this model performs relatively poorly on the overall accuracy on the test set, which is brought down by a poor sensitivity rate. This might be due to the fact that the proportion of 'yes' in the test set was very low.
 
 Other disadvantages of this model are as follows:
 
@@ -470,10 +469,10 @@ All codes used to generate models, plots and report related to this work can be 
 \hline
 Summary       & \multicolumn{3}{l|}{Training Set Statistics} & \multicolumn{3}{l|}{Test Set Statistics} &       \\ \hline
 Model         & Accuracy    & Sensitivity    & Specificity   & Accuracy   & Sensitivity  & Specificity  & AUC   \\ \hline
-LR model 1    & 0.827       & 0.811          & 0.842         & 0.939      & 0.293        &  0.979        & 0.912 \\ \hline
-LR model 2    & 0.824       & 0.796          & 0.852         & 0.828      & 0.863        & 0.793        & 0.912 \\ \hline
-LDA           & 0.741       & 0.658          & 0.824         & 0.828      & 0.827        & 0.636        & 0.805 \\ \hline
-Random Forest & 0.854       & 0.884          & 0.825         & 0.828      & 0.879        & 0.825        & 0.923 \\ \hline
+LR model 1    & 0.827       & 0.811          & 0.842         & 0.939      & 0.293        &  0.979       & 0.912 \\ \hline
+LR model 2    & 0.824       & 0.796          & 0.852         & 0.859      & 0.863        & 0.793        & 0.912 \\ \hline
+LDA           & 0.741       & 0.658          & 0.824         & 0.647      & 0.827        & 0.636        & 0.805 \\ \hline
+Random Forest & 0.854       & 0.884          & 0.825         & 0.826      & 0.879        & 0.825        & 0.923 \\ \hline
 \end{tabular}
 \caption{Performance characteristics of all models.}
  \label{table2}
