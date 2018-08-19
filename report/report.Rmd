@@ -3,8 +3,8 @@ title: MSDS 6372 Project 2 - Using classification methods to determine an outcom
   of a telemarketing campaign.
 author: "Swee K Chew, Rene Pineda, Volodymyr Orlov"
 output:
-  html_document: null
   pdf_document: default
+  html_document: null
   df_print: paged
 header-includes: \usepackage{amsmath}
 ---
