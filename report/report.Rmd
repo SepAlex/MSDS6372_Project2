@@ -1,10 +1,11 @@
 ---
-title: "MSDS 6372 Project 2 - Using classification methods to determine an outcome of a telemarketing campaign."
+title: MSDS 6372 Project 2 - Using classification methods to determine an outcome
+  of a telemarketing campaign.
 author: "Swee K Chew, Rene Pineda, Volodymyr Orlov"
 output:
-   
-    html_document:
-    df_print: paged
+  html_document: null
+  pdf_document: default
+  df_print: paged
 header-includes: \usepackage{amsmath}
 ---
 
@@ -207,7 +208,7 @@ Based on this information, we can conclude that the random forest model is suita
 
 All codes used to generate models, plots and report related to this work can be found in [https://github.com/VolodymyrOrlov/MSDS6372_Project2](https://github.com/VolodymyrOrlov/MSDS6372_Project2)
 
-## Figures and Tables
+## Tables and Figures
 
 \begin{table}[h]
 \centering
@@ -236,6 +237,22 @@ All codes used to generate models, plots and report related to this work can be 
  \label{table1}
 \end{table}
 
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+Summary       & \multicolumn{3}{l|}{Training Set Statistics} & \multicolumn{3}{l|}{Test Set Statistics} &       \\ \hline
+Model         & Accuracy    & Sensitivity    & Specificity   & Accuracy   & Sensitivity  & Specificity  & AUC   \\ \hline
+LR model 1    & 0.827       & 0.811          & 0.842         & 0.939      & 0.293        &  0.979       & 0.912 \\ \hline
+LR model 2    & 0.824       & 0.796          & 0.852         & 0.859      & 0.863        & 0.793        & 0.912 \\ \hline
+LDA           & 0.741       & 0.658          & 0.824         & 0.647      & 0.827        & 0.636        & 0.805 \\ \hline
+Random Forest & 0.854       & 0.884          & 0.825         & 0.826      & 0.879        & 0.825        & 0.923 \\ \hline
+\end{tabular}
+\caption{Performance characteristics of all models.}
+ \label{table2}
+\end{table}
+
+
 \begin{figure}[h]
   \centering
     \includegraphics[width=0.8\textwidth]{images/fig1.png}
@@ -243,14 +260,14 @@ All codes used to generate models, plots and report related to this work can be 
   \label{fig1}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
   \centering
     \includegraphics[width=1.0\textwidth]{images/fig2.png}
   \caption{Histograms of continuous variables.}
   \label{fig2}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
   \centering
     \includegraphics[width=1.0\textwidth]{images/fig3.png}
   \caption{Boxplots of continuous variables.}
@@ -462,20 +479,5 @@ All codes used to generate models, plots and report related to this work can be 
   \label{fig31}
 \end{figure}
 
-
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|l|l|l|l|l|l|l|}
-\hline
-Summary       & \multicolumn{3}{l|}{Training Set Statistics} & \multicolumn{3}{l|}{Test Set Statistics} &       \\ \hline
-Model         & Accuracy    & Sensitivity    & Specificity   & Accuracy   & Sensitivity  & Specificity  & AUC   \\ \hline
-LR model 1    & 0.827       & 0.811          & 0.842         & 0.939      & 0.293        &  0.979       & 0.912 \\ \hline
-LR model 2    & 0.824       & 0.796          & 0.852         & 0.859      & 0.863        & 0.793        & 0.912 \\ \hline
-LDA           & 0.741       & 0.658          & 0.824         & 0.647      & 0.827        & 0.636        & 0.805 \\ \hline
-Random Forest & 0.854       & 0.884          & 0.825         & 0.826      & 0.879        & 0.825        & 0.923 \\ \hline
-\end{tabular}
-\caption{Performance characteristics of all models.}
- \label{table2}
-\end{table}
 
 
